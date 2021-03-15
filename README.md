@@ -28,7 +28,7 @@ In the future I would like to add the functionality to save all days activities 
 
 ## Deployed Project
 
-
+https://brandonshoemaker.github.io/Hourly-Planner/
 
 ## Screenshots
 
