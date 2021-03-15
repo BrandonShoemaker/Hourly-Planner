@@ -63,7 +63,7 @@ class hourTask{
         var h3El = $("<h3>").addClass("col-2 hour");
         h3El.text(this.#time);
 
-        // if in time frames, change time frame to corresponding color
+        // provides default time frame and creates data entry field
         var textAreaEl = $("<textarea>").addClass("col-8 past");
         textAreaEl.val(this.#activity);
 
@@ -86,18 +86,18 @@ function buildDay(){
     // initializing text content that will go into the object
     var hourText;
     // for all hours in the day
-    for(var i = 1; i < 25; i++){
+    for(var i = 0; i < 24; i++){
         // if enters pm, change add pm to end
-        if(i>12){
+        if(i > 12){
             hourText = (i - 12) + ":00 p.m.";
-            // if exactly 12 in the pm, change to am
-            if(i === 24) hourText = [hourText.slice(0, (hourText.length-4)), "a", hourText.slice((hourText.length-3))].join("");
         }
         // if in am, add am to end
         else{
             hourText = i + ":00 a.m.";
-            // same as above but with pm
+            // if exactly 12 in the pm, change to am
             if(i === 12) hourText = [hourText.slice(0, (hourText.length-4)), "p", hourText.slice((hourText.length-3))].join("");
+            // same as above but with pm
+            if(i === 0) hourText = ["12", hourText.slice((hourText.length-8), (hourText.length-4)), "a", hourText.slice((hourText.length-3))].join("");
         }
         // creates and initializes the new hour object
         hourEl = new hourTask(hourText, "");
@@ -106,35 +106,42 @@ function buildDay(){
     }
 }
 
+// waits for everything to generate before messing with elements
 $(document).ready(function () {
+    // on save button click
     $(".row").on("click", "button", function(){
+        // find buttons rows index
         var ind = $(this).closest(".row").index();
+        // gets new data
         var val = $(this).closest(".row").find("textarea").val().trim();
-
+        // creates an hour object that saves the index and the value
         var hourObj = {
-            year: 2020,
-            day: 10,
             index: ind,
             value: val
         };
-
-        debugger;
+        // check to see if the index has been changed already, if so get its index
         var existingInd = hours.findIndex(selector => selector.index === ind);
+        // if the index exists, meaning its been changed
         if(existingInd >= 0){
+            // and if the user has deleted the previous todo activity and left it blank
             if(!val) {
+                // remove the newly emptied hour from the list
                 hours.splice(existingInd, 1);
             }
             else{
+                // otherwise, reassign the new activity
                 hours[existingInd].value = val;    
             }
         }
         else{
+            // if the index doesnt exist yet, save it in the list
             hours.push(hourObj);    
         }
-
+        // save the changes
         setStorage();
     });
 
+    // clears all activities when clicking the clear button at the bottom of the page
     $(".clearCatcher").on("click", "button", function(){
         clearStorage();
     });
@@ -143,27 +150,18 @@ $(document).ready(function () {
 
 });
 
+// changes hour colors based on each hour and the current hour in terms of past present or future
 function auditTask(hourEl, index){
     var textAEl = $(hourEl).find("textarea")
     var date = $("#currentDay")
       .text()
       .trim();
-    var actualHour;
-    if(index > parseInt($(hourEl).find(".hour").text().slice(0, -8))){
-        actualHour = index;
-    }
-    else {
-        actualHour = parseInt($(".hour").text().slice(0, -8));
-
-    }
-    
-    console.log($(hourEl).find(".hour").text().slice(0, -8));
 
     textAEl.removeClass("present future past");
-    if((actualHour - moment().format("H")) < 0 ){
+    if((index - moment().format("H")) < 0 ){
         textAEl.addClass("past");
     }
-    else if(actualHour - moment().format("H") >= 1){
+    else if(index - moment().format("H") >= 1){
         textAEl.addClass("future");
     }
     else{
