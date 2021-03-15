@@ -1,5 +1,6 @@
 // container for all events for all days with 
 var hours = [];
+var nextDay;
 
 function setStorage(){
     localStorage.setItem("hour-description", JSON.stringify(hours));
@@ -24,6 +25,11 @@ function getStorage(){
             }
         });
     }
+}
+
+function setNextDay(){
+    nextDay = moment().add(1, "days");
+    moment().add(-1, "days");
 }
 
 // class for each time slot
@@ -138,28 +144,28 @@ function auditTask(hourEl, index){
         actualHour = parseInt($(".hour").text().slice(0, -8));
 
     }
-    var time = moment(date, "L").set("hour", actualHour);
     
     console.log($(hourEl).find(".hour").text().slice(0, -8));
-    console.log(time);
 
     textAEl.removeClass("present future past");
-    if(moment().isAfter(time)){
-      textAEl.addClass("past");
+    if((actualHour - moment().format("H")) < 0 ){
+        textAEl.addClass("past");
     }
-    else if(moment().isBefore(time)){
+    else if(actualHour - moment().format("H") >= 1){
         textAEl.addClass("future");
     }
-    if(Math.abs(moment().diff(time, "hours")) <= 1 &&  Math.abs(moment().diff(time, "hours")) >= 0){
-        textAEl.removeClass("future");
+    else{
         textAEl.addClass("present");
     }
-    console.log(Math.abs(moment().diff(time, "hours")));
   }
 
+setNextDay();
 buildDay();
 $(".d-flex").children().each(function(index, el){
-    debugger;
-    moment().format("H HH");
     auditTask(el, index);
+    if(moment() == nextDay){
+        clearStorage();
+        setNextDay();
+        buildDay();
+    }
 }, 5000);
