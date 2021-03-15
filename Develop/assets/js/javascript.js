@@ -1,6 +1,8 @@
 // container for all events for all days with 
 var hours = [];
+// holds next day to progress hours
 var nextDay;
+
 
 function setStorage(){
     localStorage.setItem("hour-description", JSON.stringify(hours));
