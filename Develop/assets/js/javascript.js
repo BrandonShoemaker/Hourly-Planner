@@ -68,7 +68,10 @@ class hourTask{
         textAreaEl.val(this.#activity);
 
         // creates save button and span for icon
-        var buttonEl = $("<button>").addClass("col-2 saveBtn");
+        var buttonEl = $("<button>");
+        buttonEl.addClass("col-2 saveBtn");
+        buttonEl.attr("title", "Save");
+        
         var spanEl = $("<span>").addClass("oi oi-circle-check");
         // adds all elements together and to the page
         buttonEl.append(spanEl);
@@ -152,30 +155,39 @@ $(document).ready(function () {
 
 // changes hour colors based on each hour and the current hour in terms of past present or future
 function auditTask(hourEl, index){
+    // gets this rows textarea
     var textAEl = $(hourEl).find("textarea")
-    var date = $("#currentDay")
-      .text()
-      .trim();
-
+    // removes all classes
     textAEl.removeClass("present future past");
+    // if the difference between hours is negative, then this hour is in the past
     if((index - moment().format("H")) < 0 ){
         textAEl.addClass("past");
     }
+    // if positive but also greater than 1, then it is in the future
     else if(index - moment().format("H") >= 1){
         textAEl.addClass("future");
     }
+    // if between 0 and 1 then it is in the present hour
     else{
         textAEl.addClass("present");
     }
   }
 
+// sets next day for comparison
 setNextDay();
+// builds this days hours
 buildDay();
+// checks all rows every 5 seconds if they have the correct class and if it is the next day
 $(".d-flex").children().each(function(index, el){
+    // passes the row and rows index to be audited
     auditTask(el, index);
+    // if it is the next day
     if(moment() == nextDay){
+        // empty previous days storage
         clearStorage();
+        // gets the next day
         setNextDay();
+        // bulds new day
         buildDay();
     }
 }, 5000);
