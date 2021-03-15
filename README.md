@@ -31,3 +31,11 @@ In the future I would like to add the functionality to save all days activities 
 
 
 ## Screenshots
+
+![1/3 of hours](./assets/screenshots/Capture.JPG)
+![2/3 of hours](./assets/screenshots/Capture2.JPG)
+![3/3 of hours](./assets/screenshots/Capture3.JPG)
+
+## Contributions
+
+Classes + Base HTML Layout: Xandromous, JS + Extra CSS + Extra HTML: Brandon Shoemaker
