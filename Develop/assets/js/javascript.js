@@ -13,6 +13,7 @@ function setStorage(){
 function clearStorage(){
     hours = [];
     setStorage();
+    location.reload();
 }
 
 // gets local strorage
