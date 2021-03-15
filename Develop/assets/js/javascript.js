@@ -1,34 +1,44 @@
 // container for all events for all days with 
 var hours = [];
-// holds next day to progress hours
+// holds next day to check and progress hours
 var nextDay;
 
-
+// sets localstorage
 function setStorage(){
+    // stringifies objects to retain datum
     localStorage.setItem("hour-description", JSON.stringify(hours));
 }
 
+// clears local storage
 function clearStorage(){
     hours = [];
     setStorage();
 }
 
+// gets local strorage
 function getStorage(){
+    // parses objects to regain datum
     hours = JSON.parse(localStorage.getItem("hour-description"));
+    // if an empty storage assign empty
     if(!hours){
         hours = [];
         return;
     }
 
+    // checks and assigns any hour todo items to hours
     for(var i = 0; i < hours.length; i++){
+        // loops through all rows
         $(".d-flex").children().each(function(){
+            // id the current rows index is the same as the index of the todo entry
             if($(this).index() === hours[i].index) {
+                // assign entry to that row
                 $(this).find("textarea").val(hours[i].value);
             }
         });
     }
 }
 
+// calculates and assigns next day as well as reverts to current day
 function setNextDay(){
     nextDay = moment().add(1, "days");
     moment().add(-1, "days");
